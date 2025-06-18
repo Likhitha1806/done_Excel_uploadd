@@ -171,22 +171,10 @@ sap.ui.define([
             const data = oModel.getProperty("/employees");
             console.log("data",data);
             
-            // $.ajax({
-            //     url: "/odata/v4/ecommerce/saveUploadedEmployees",
-            //     method: "POST",
-            //     contentType: "application/json",
-            //     data: JSON.stringify({ input: data }),
-            //     success: (response) => {
-            //         const message = response?.message || "Employees saved successfully.";
-            //         MessageToast.show(message);
-            //         this.refreshTable();
-            //     },
-            //     error: (error) => {
-            //         console.error("Error saving employees:", error.responseText);
-            //         MessageBox.error("Failed to save employees.");
-            //     }
-            // });
+           
         }
+
+        
         
     });
 });
