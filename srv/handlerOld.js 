@@ -1,0 +1,65 @@
+module.exports = async function (srv) {
+    const { Employees } = srv.entities;
+
+    srv.on("saveUploadedEmployees", async (req) => {
+        const inputData = req.data.input;
+
+        console.log("Received input:", inputData); // Optional for debugging
+
+        try {
+            if (!Array.isArray(inputData)) {
+                return req.error(400, "Input data must be an array.");
+            }
+
+            // Optional: Validate date format
+            inputData.forEach(emp => {
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(emp.JoiningDate)) {
+                    throw new Error(`Invalid date format for JoiningDate: ${emp.JoiningDate}`);
+                }
+            });
+
+            await srv.run(INSERT.into(Employees).entries(inputData));
+
+            // ✅ Return success message to frontend
+            return { message: "Employees saved successfully." };
+
+        } catch (error) {
+            console.error("CAP Handler Error:", error);
+            return req.error(500, "Failed to save employees.");
+        }
+    });
+
+    this.on("bulkUpload", async (req) => {
+       
+      const {jsonData} = req.data;
+        //console.log("jsonData",jsonData);
+     
+        try {
+          const data = JSON.parse(jsonData);
+          //console.log("data",data);
+            if (!data || !Array.isArray(data) || data.length === 0) {
+                return req.error(400, 'No data provided or data is not an array');
+            }
+   
+            const tx = cds.transaction(req);
+            const validRecords = Bulkvalidation(data);
+            if (validRecords.length === 0) {
+                return req.error(400, 'No valid records found');
+            }
+ 
+            // Batch insert
+            await tx.run(INSERT.into(customer).entries(validRecords));
+           
+            return {
+                message: 'Records upload successful',
+                totalRecords: data.length,
+                insertedRecords: validRecords.length,
+                skippedRecords: data.length - validRecords.length
+            };
+           
+        } catch (error) {
+            console.error('Bulk upload error:', error);
+            return req.error(500, `Bulk upload failed: ${error.message}`);
+        }
+    });
+};

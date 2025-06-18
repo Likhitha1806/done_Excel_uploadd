@@ -1,0 +1,63 @@
+<mvc:View
+    controllerName="project1.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:unified="sap.ui.unified">
+
+    <Page id="page" title="Employee Upload">
+        <content>
+            <VBox id="mainVBox" class="sapUiSmallMargin">
+                
+                <!-- Welcome Text -->
+                <Text id="_IDGenText1" text="Welcome to SAPUI5!" />
+
+                <!-- Download Template Button -->
+                <Button id="_IDGenButton"
+                    text="Download Template"
+                    press="onDownloadTemplate"
+                    class="sapUiSmallMarginBottom" />
+
+                <!-- File Uploader -->
+                <unified:FileUploader
+                    id="fileUploader"
+                    name="uploadFile"
+                    uploadUrl=""
+                    width="100%"
+                    placeholder="Choose a CSV file to upload"
+                    change="onFileChange"
+                    buttonText="Upload"
+                    fileType="csv"
+                    maximumFileSize="5"
+                    mimeType="text/csv"
+                    useMultipart="false"
+                    class="sapUiSmallMarginBottom" />
+
+                <!-- Scrollable Table Container -->
+                <ScrollContainer id="_IDGenScrollContainer"
+                    horizontal="true"
+                    vertical="false"
+                    width="100%"
+                    height="auto"
+                    class="scrollContainer">
+
+                    <Table
+                        id="dataTable"
+                        visible="false"
+                        fixedLayout="false"
+                        width="1500px"
+                        class="sapUiResponsiveMargin">
+                    </Table>
+                </ScrollContainer>
+
+                <!-- Save Button -->
+                <Button
+                    id="saveButton"
+                    text="Save"
+                    press="onSave"
+                    visible="false"
+                    class="sapUiSmallMarginTop" />
+
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>
