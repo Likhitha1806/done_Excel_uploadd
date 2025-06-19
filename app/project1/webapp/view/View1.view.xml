@@ -8,18 +8,25 @@
         <content>
             <VBox id="mainVBox" class="sapUiSmallMargin">
                 
-                <!-- Welcome Text -->
                 <Text id="_IDGenText1" text="Welcome to SAPUI5!" />
 
-                <!-- Download Template Button -->
-                <Button id="_IDGenButton"
-                    text="Download Template"
-                    press="onDownloadTemplate"
-                    class="sapUiSmallMarginBottom" />
-                    
+                <Button id="_IDGenButton" text="Download Template"
+                        press="onDownloadTemplate"
+                        class="sapUiSmallMarginBottom" />
 
+                <Button id="_IDGenButton1" text="Open Invalid Records"
+                        press="onopeninvalidrecords"
+                        class="sapUiSmallMarginBottom" />
 
-                <!-- File Uploader -->
+              
+                <Button
+                    id="ExportExcelButton"
+                    text="Download Invalid Records"
+                    press="onExportExcelButton"
+                    visible="true"
+                    class="sapUiSmallMarginTop" />
+               
+
                 <unified:FileUploader
                     id="fileUploader"
                     name="uploadFile"
@@ -34,8 +41,7 @@
                     useMultipart="false"
                     class="sapUiSmallMarginBottom" />
 
-                <!-- Scrollable Table Container -->
-                <ScrollContainer id="_IDGenScrollContainer"
+                <ScrollContainer id="_IDGenScrollContainer1"
                     horizontal="true"
                     vertical="false"
                     width="100%"
@@ -51,7 +57,6 @@
                     </Table>
                 </ScrollContainer>
 
-                <!-- Save Button -->
                 <Button
                     id="saveButton"
                     text="Save"

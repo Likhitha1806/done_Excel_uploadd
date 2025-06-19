@@ -16,3 +16,12 @@ service ECommerceService {
     action saveUploadedEmployees(input: array of EmployeeInput);
     action bulkUpload(jsonData: String) returns {};
 }
+action bulkUpload(jsonData: String) returns {
+    message: String;
+    totalRecords: Integer;
+    insertedRecords: Integer;
+    skippedRecords: Integer;
+    downloadInvalidRecords: String;
+};
+
+

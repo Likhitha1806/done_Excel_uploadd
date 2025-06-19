@@ -1,0 +1,39 @@
+<mvc:View
+  controllerName="project1.controller.InvalidRecords"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  displayBlock="true">
+
+  <Page id="invalidPage" title="Invalid Records">
+    <content>
+      <!-- Export Button placed outside the Table -->
+      <Button id="_IDGenButton3" text="Export to Excel" press="onExport" />
+
+      <Table
+        id="invalidTable"
+        items="{/invalidEmployees}"
+        inset="false"
+        class="sapUiResponsiveMargin"
+        width="auto">
+
+        <columns>
+          <Column id="_IDGenColumn1"><Text id="_IDGenText" text="Name" /></Column>
+          <Column id="_IDGenColumn2"><Text id="_IDGenText2" text="Email" /></Column>
+          <Column id="_IDGenColumn3"><Text id="_IDGenText3" text="Phone" /></Column>
+          <Column id="_IDGenColumn4"><Text id="_IDGenText4" text="Joining Date" /></Column>
+        </columns>
+
+        <items>
+          <ColumnListItem id="_IDGenColumnListItem">
+            <cells>
+              <Text id="_IDGenText5" text="{Name}" />
+              <Text id="_IDGenText6" text="{Email}" />
+              <Text id="_IDGenText7" text="{Phone}" />
+              <Text id="_IDGenText8" text="{JoiningDate}" />
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </content>
+  </Page>
+</mvc:View>
