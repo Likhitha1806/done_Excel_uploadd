@@ -1,500 +1,227 @@
-// // // sap.ui.define([
-// // //     "sap/ui/core/mvc/Controller",
-// // //     "sap/ui/model/json/JSONModel",
-// // //     "sap/m/MessageToast",
-// // //     "sap/m/MessageBox",
-// // //     "sap/m/Column",
-// // //     "sap/m/Text",
-// // //     "sap/m/ColumnListItem"
-// // // ], function (Controller, JSONModel, MessageToast, MessageBox, Column, Text, ColumnListItem) {
-// // //     "use strict";
-
-// // //     return Controller.extend("project1.controller.View1", {
-// // //         onInit: function () {},
-
-// // //         onDownloadTemplate: function () {
-// // //             $.ajax({
-// // //                 url: "model/Template.csv",
-// // //                 dataType: "text",
-// // //                 success: (data) => {
-// // //                     const encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(data);
-// // //                     const link = document.createElement("a");
-// // //                     link.setAttribute("href", encodedUri);
-// // //                     link.setAttribute("download", "Template.csv");
-// // //                     document.body.appendChild(link);
-// // //                     link.click();
-// // //                     document.body.removeChild(link);
-// // //                     MessageToast.show("Template downloaded!");
-// // //                 },
-// // //                 error: () => {
-// // //                     MessageToast.show("Failed to fetch CSV for download.");
-// // //                 }
-// // //             });
-// // //         },
-
-// // //         onFileChange: function (oEvent) {
-// // //             const file = oEvent.getParameter("files")[0];
-
-// // //             if (file && window.FileReader) {
-// // //                 const reader = new FileReader();
-
-// // //                 reader.onload = (e) => {
-// // //                     const csv = e.target.result;
-// // //                     const lines = csv.split("\n");
-// // //                     const headers = lines[0].trim().split(",");
-// // //                     const result = [];
-
-// // //                     let invalidName = false;
-// // //                     let invalidEmail = false;
-// // //                     let invalidPhone = false;
-
-// // //                     for (let i = 1; i < lines.length; i++) {
-// // //                         const line = lines[i].trim();
-// // //                         if (line) {
-// // //                             const values = line.split(",");
-// // //                             const record = {};
-// // //                             headers.forEach((header, index) => {
-// // //                                 record[header] = values[index];
-// // //                             });
-
-// // //                             // Name validation
-// // //                             const name = record["Name"];
-// // //                             if (name && /\d/.test(name)) {
-// // //                                 invalidName = true;
-// // //                             }
-
-// // //                             // Email validation
-// // //                             const email = record["Email"];
-// // //                             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// // //                             if (email && !emailPattern.test(email)) {
-// // //                                 invalidEmail = true;
-// // //                             }
-
-// // //                             // Phone validation
-// // //                             const phone = record["Phone"];
-// // //                             const phoneStr = String(phone).padStart(10, "0");
-// // //                             const phonePattern = /^\d{10}$/;
-// // //                             if (!phonePattern.test(phoneStr)) {
-// // //                                 invalidPhone = true;
-// // //                             }
-// // //                             record["Phone"] = phoneStr;
-
-// // //                             // JoiningDate format conversion (DD-MM-YYYY to YYYY-MM-DD)
-// // //                             const joiningDate = record["JoiningDate"];
-// // //                             const dateParts = joiningDate.split("-");
-// // //                             if (dateParts.length === 3) {
-// // //                                 const [day, month, year] = dateParts;
-// // //                                 if (day.length === 2 && month.length === 2 && year.length === 4) {
-// // //                                     record["JoiningDate"] = `${year}-${month}-${day}`;
-// // //                                 } else {
-// // //                                     record["JoiningDate"] = null;
-// // //                                 }
-// // //                             }
-
-// // //                             result.push(record);
-// // //                         }
-// // //                     }
-
-// // //                     const oModel = new JSONModel({ employees: result });
-// // //                     const mainModel = this.getView().getModel("mainModel");
-// // //                     console.log("result",result);
-// // //                     mainModel.callFunction("/bulkUpload",{
-// // //                         method:"POST",
-// // //                         urlParameters:{
-// // //                             jsonData: JSON.stringify(result)
-// // //                         },
-// // //                         success:(data)=>{
-// // //                             MessageToast.show("Failed to fetch CSV for download.");
-// // //                         },
-// // //                         error:(error)=>{
-// // //                             console.log("error Data :",error);
-// // //                         }
-// // //                     })
-
-// // //                     const oView = this.getView();
-// // //                     oView.setModel(oModel);
-
-// // //                     const oTable = oView.byId("dataTable");
-// // //                     oTable.removeAllColumns();
-// // //                     oTable.removeAllItems();
-
-// // //                     headers.forEach(header => {
-// // //                         oTable.addColumn(new Column({
-// // //                             header: new Text({ text: header }),
-// // //                             width: "200px"
-// // //                         }));
-// // //                     });
-
-// // //                     result.forEach(row => {
-// // //                         const cells = headers.map(header => new Text({ text: row[header] }));
-// // //                         oTable.addItem(new ColumnListItem({ cells }));
-// // //                     });
-
-// // //                     oTable.setVisible(true);
-// // //                     oView.byId("saveButton").setVisible(true);
-
-// // //                     if (invalidName || invalidEmail || invalidPhone) {
-// // //                         let message = "Please correct the following:\n";
-// // //                         if (invalidName) message += "- Name should contain only characters.\n";
-// // //                         if (invalidEmail) message += "- Email format is invalid.\n";
-// // //                         if (invalidPhone) message += "- Phone number must be 10 digits.\n";
-// // //                         MessageBox.warning(message);
-// // //                     } else {
-// // //                         MessageToast.show("File uploaded and table updated!");
-// // //                     }
-// // //                 };
-
-// // //                 reader.readAsText(file);
-// // //             } else {
-// // //                 MessageToast.show("This browser does not support file reading.");
-// // //             }
-// // //         },
-
-// // //         refreshTable: function () {
-// // //             $.ajax({
-// // //                 url: "/odata/v4/ecommerce/Employees",
-// // //                 method: "GET",
-// // //                 success: (data) => {
-// // //                     console.log("Data fetched:", data);
-// // //                     MessageToast.show("Data refreshed successfully.");
-// // //                 },
-// // //                 error: (error) => {
-// // //                     console.error("Refresh error:", error);
-// // //                     MessageBox.error("Failed to refresh data.");
-// // //                 }
-// // //             });
-// // //         },
-        
-       
-// // //         onSave: function () {
-            
-// // //             const data = oModel.getProperty("/employees");
-// // //             console.log("data",data);
-            
-           
-// // //         },
-// // //     });
-// // // });
-// // sap.ui.define([
-// //     "sap/ui/core/mvc/Controller",
-// //     "sap/ui/model/json/JSONModel",
-// //     "sap/m/MessageToast",
-// //     "sap/m/MessageBox",
-// //     "sap/m/Column",
-// //     "sap/m/Text",
-// //     "sap/m/ColumnListItem"
-// // ], function (Controller, JSONModel, MessageToast, MessageBox, Column, Text, ColumnListItem) {
-// //     "use strict";
-
-// //     return Controller.extend("project1.controller.View1", {
-// //         onInit: function () {
-// //             this._oModel = new JSONModel();
-// //             this.getView().setModel(this._oModel, "mainModel");
-// //         },
-
-// //         onDownloadTemplate: function () {
-// //             $.ajax({
-// //                 url: "model/Template.csv",
-// //                 dataType: "text",
-// //                 success: (data) => {
-// //                     const encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(data);
-// //                     const link = document.createElement("a");
-// //                     link.setAttribute("href", encodedUri);
-// //                     link.setAttribute("download", "Template.csv");
-// //                     document.body.appendChild(link);
-// //                     link.click();
-// //                     document.body.removeChild(link);
-// //                     MessageToast.show("Template downloaded!");
-// //                 },
-// //                 error: () => {
-// //                     MessageToast.show("Failed to fetch CSV for download.");
-// //                 }
-// //             });
-// //         },
-
-// //         onFileChange: function (oEvent) {
-// //             const file = oEvent.getParameter("files")[0];
-
-// //             if (file && window.FileReader) {
-// //                 const reader = new FileReader();
-
-// //                 reader.onload = (e) => {
-// //                     const csv = e.target.result;
-// //                     const lines = csv.split("\n");
-// //                     const headers = lines[0].trim().split(",");
-// //                     const result = [];
-
-// //                     for (let i = 1; i < lines.length; i++) {
-// //                         const line = lines[i].trim();
-// //                         if (line) {
-// //                             const values = line.split(",");
-// //                             const record = {};
-// //                             headers.forEach((header, index) => {
-// //                                 record[header] = values[index];
-// //                             });
-
-// //                             // Format phone
-// //                             record["Phone"] = String(record["Phone"]).padStart(10, "0");
-
-// //                             // Format date
-// //                             const joiningDate = record["JoiningDate"];
-// //                             const dateParts = joiningDate?.split("-");
-// //                             if (dateParts?.length === 3) {
-// //                                 const [day, month, year] = dateParts;
-// //                                 record["JoiningDate"] = `${year}-${month}-${day}`;
-// //                             }
-
-// //                             result.push(record);
-// //                         }
-// //                     }
-
-// //                     this._oModel.setProperty("/employees", result);
-
-// //                     const oTable = this.getView().byId("dataTable");
-// //                     oTable.removeAllColumns();
-// //                     oTable.removeAllItems();
-
-// //                     headers.forEach(header => {
-// //                         oTable.addColumn(new Column({
-// //                             header: new Text({ text: header }),
-// //                             width: "200px"
-// //                         }));
-// //                     });
-
-// //                     result.forEach(row => {
-// //                         const cells = headers.map(header => new Text({ text: row[header] }));
-// //                         oTable.addItem(new ColumnListItem({ cells }));
-// //                     });
-
-// //                     oTable.setVisible(true);
-// //                     this.getView().byId("saveButton").setVisible(true);
-// //                 };
-
-// //                 reader.readAsText(file);
-// //             } else {
-// //                 MessageToast.show("This browser does not support file reading.");
-// //             }
-// //         },
-
-// //         onSave: function () {
-// //             const data = this._oModel.getProperty("/employees");
-
-// //             if (!data || data.length === 0) {
-// //                 MessageToast.show("No data to upload.");
-// //                 return;
-// //             }
-
-// //             const mainModel = this.getView().getModel("mainModel");
-
-// //             mainModel.callFunction("/bulkUpload", {
-// //                 method: "POST",
-// //                 urlParameters: {
-// //                     jsonData: JSON.stringify(data)
-// //                 },
-// //                 success: (result) => {
-// //                     MessageToast.show(result.message);
-
-// //                     if (result.downloadInvalidRecords) {
-// //                         this.downloadLink = result.downloadInvalidRecords;
-// //                         this.getView().byId("downloadBtn").setVisible(true);
-// //                     }
-// //                 },
-// //                 error: (error) => {
-// //                     console.error("Upload error:", error);
-// //                     MessageBox.error("Upload failed.");
-// //                 }
-// //             });
-            
-// //         },
-// //         onopeninvalidrecords: function () {
-// //             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-// //             oRouter.navTo("invalidrecords");
-// //         },
-        
-
-// //         onDownloadPress: function () {
-// //             if (this.downloadLink) {
-// //                 window.open(this.downloadLink, "_blank");
-            
-// // } else {
-// //  sap.m.MessageToast.show("No file available to download.");
-// //   }
-    
-// //         },
-
-// //         refreshTable: function () {
-// //             $.ajax({
-// //                 url: "/odata/v4/ecommerce/Employees",
-// //                 method: "GET",
-// //                 success: (data) => {
-// //                     console.log("Data fetched:", data);
-// //                     MessageToast.show("Data refreshed successfully.");
-// //                 },
-// //                 error: (error) => {
-// //                     console.error("Refresh error:", error);
-// //                     MessageBox.error("Failed to refresh data.");
-// //                 }
-// //             });
-// //         }
-// //     });
-// // });
-
-
 // sap.ui.define([
-//         "sap/ui/core/mvc/Controller",
-//         "sap/ui/model/json/JSONModel",
-//         "sap/m/MessageToast",
-//         "sap/m/MessageBox",
-//         "sap/m/Column",
-//         "sap/m/Text",
-//         "sap/m/ColumnListItem"
-//     ], function (Controller, JSONModel, MessageToast, MessageBox, Column, Text, ColumnListItem) {
-//         "use strict";
-     
-//         return Controller.extend("project1.controller.View1", {
-//             onInit: function () {},
-     
-//             onDownloadTemplate: function () {
-//                 $.ajax({
-//                     url: "model/Template.csv",
-//                     dataType: "text",
-//                     success: (data) => {
-//                         const encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(data);
-//                         const link = document.createElement("a");
-//                         link.setAttribute("href", encodedUri);
-//                         link.setAttribute("download", "Template.csv");
-//                         document.body.appendChild(link);
-//                         link.click();
-//                         document.body.removeChild(link);
-//                         MessageToast.show("Template downloaded!");
-//                     },
-//                     error: () => {
-//                         MessageToast.show("Failed to fetch CSV for download.");
-//                     }
-//                 });
-//             },
-     
-//             onFileChange: function (oEvent) {
-//                 const file = oEvent.getParameter("files")[0];
-     
-//                 if (file && window.FileReader) {
-//                     const reader = new FileReader();
-     
-//                     reader.onload = (e) => {
-//                         const csv = e.target.result;
-//                         const lines = csv.split("\n");
-//                         const headers = lines[0].trim().split(",");
-//                         const validRecords = [];
-//                         const invalidRecords = [];
-     
-//                         for (let i = 1; i < lines.length; i++) {
-//                             const line = lines[i].trim();
-//                             if (line) {
-//                                 const values = line.split(",");
-//                                 const record = {};
-//                                 headers.forEach((header, index) => {
-//                                     record[header] = values[index];
-//                                 });
-     
-//                                 let isValid = true;
-     
-//                                 const name = record["Name"];
-//                                 if (name && /\d/.test(name)) isValid = false;
-     
-//                                 const email = record["Email"];
-//                                 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//                                 if (email && !emailPattern.test(email)) isValid = false;
-     
-//                                 const phone = record["Phone"];
-//                                 const phoneStr = String(phone).padStart(10, "0");
-//                                 const phonePattern = /^\d{10}$/;
-//                                 if (!phonePattern.test(phoneStr)) isValid = false;
-//                                 record["Phone"] = phoneStr;
-     
-//                                 const joiningDate = record["JoiningDate"];
-//                                 const dateParts = joiningDate.split("-");
-//                                 if (dateParts.length === 3) {
-//                                     const [day, month, year] = dateParts;
-//                                     if (day.length === 2 && month.length === 2 && year.length === 4) {
-//                                         record["JoiningDate"] = `${year}-${month}-${day}`;
-//                                     } else {
-//                                         record["JoiningDate"] = null;
-//                                     }
-//                                 }
-     
-//                                 if (isValid) {
-//                                     validRecords.push(record);
-//                                 } else {
-//                                     invalidRecords.push(record);
-//                                 }
-//                             }
-//                         }
-     
-//                         const validModel = new JSONModel({ employees: validRecords });
-//                         const invalidModel = new JSONModel({ InvalidEmployees: invalidRecords });
-     
-//                         this.getView().setModel(validModel, "mainModel");
-//                         sap.ui.getCore().setModel(invalidModel, "invalidModel");
-     
-//                         const mainModel = this.getView().getModel("mainModel");
-//                         mainModel.callFunction("/bulkUpload", {
-//                             method: "POST",
-//                             urlParameters: {
-//                                 jsonData: JSON.stringify(validRecords)
-//                             },
-//                             success: () => {
-//                                 MessageToast.show("Valid records uploaded successfully.");
-//                             },
-//                             error: (error) => {
-//                                 console.log("Upload error:", error);
-//                             }
-//                         });
-     
-//                         const oTable = this.getView().byId("dataTable");
-//                         oTable.removeAllColumns();
-//                         oTable.removeAllItems();
-     
-//                         headers.forEach(header => {
-//                             oTable.addColumn(new Column({
-//                                 header: new Text({ text: header }),
-//                                 width: "200px"
-//                             }));
-//                         });
-     
-//                         validRecords.forEach(row => {
-//                             const cells = headers.map(header => new Text({ text: row[header] }));
-//                             oTable.addItem(new ColumnListItem({ cells }));
-//                         });
-     
-//                         oTable.setVisible(true);
-//                         this.getView().byId("saveButton").setVisible(true);
-     
-//                         if (invalidRecords.length > 0) {
-//                             MessageBox.warning("Some records are invalid. Click XYZ to view them.");
-//                         } else {
-//                             MessageToast.show("All records are valid and uploaded.");
-//                         }
-//                     };
-     
-//                     reader.readAsText(file);
-//                 } else {
-//                     MessageToast.show("This browser does not support file reading.");
+//     "sap/ui/core/mvc/Controller",
+//     "sap/ui/model/json/JSONModel",
+//     "sap/m/MessageToast",
+//     "sap/m/MessageBox",
+//     "sap/m/Column",
+//     "sap/m/Text",
+//     "sap/m/ColumnListItem"
+// ], function (Controller, JSONModel, MessageToast, MessageBox, Column, Text, ColumnListItem) {
+//     "use strict";
+
+//     return Controller.extend("project1.controller.View1", {
+//         onInit: function () {
+//             // Model for controlling visibility of invalid record buttons
+//             var oUIModel = new JSONModel({ hasInvalidEmployees: false });
+//             this.getView().setModel(oUIModel, "ui");
+//         },
+
+//         onDownloadTemplate: function () {
+//             $.ajax({
+//                 url: "model/Template.csv",
+//                 dataType: "text",
+//                 success: (data) => {
+//                     const encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(data);
+//                     const link = document.createElement("a");
+//                     link.setAttribute("href", encodedUri);
+//                     link.setAttribute("download", "Template.csv");
+//                     document.body.appendChild(link);
+//                     link.click();
+//                     document.body.removeChild(link);
+//                     MessageToast.show("Template downloaded!");
+//                 },
+//                 error: () => {
+//                     MessageToast.show("Failed to fetch CSV for download.");
 //                 }
-//             },
-     
-//             onSave: function () {
-//                 const data = this.getView().getModel("mainModel").getProperty("/employees");
-//                 console.log("Saving data:", data);
-//             },
-     
-//             onopeninvalidrecords: function () {
-//                             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-//                             oRouter.navTo("invalidrecords");
-//                         },
-//         });
+//             });
+//         },
+
+//         onFileChange: function (oEvent) {
+//             const file = oEvent.getParameter("files")[0];
+//             this._uploadedFile = file;
+//             if (file && window.FileReader) {
+//                 const reader = new FileReader();
+
+//                 reader.onload = (e) => {
+//                     const csv = e.target.result;
+//                     const lines = csv.split("\n").filter(Boolean);
+//                     const headers = lines[0].trim().split(",");
+//                     const allRecords = [];
+//                     const invalidRecords = [];
+
+//                     // Validation patterns
+//                     const namePattern = /^[A-Za-z\s]+$/;
+//                     const psNumberPattern = /^\d{6,10}$/;
+//                     const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+//                     // Add other numeric columns if required
+//                     const numericColumns = []; // e.g., ["SALARY", "AGE"]
+
+//                     for (let i = 1; i < lines.length; i++) {
+//                         const line = lines[i].trim();
+//                         if (line) {
+//                             const values = line.split(",");
+//                             const record = {};
+//                             headers.forEach((header, index) => {
+//                                 record[header] = values[index];
+//                             });
+
+//                             // Validation logic
+//                             let isValid = true;
+//                             if (!record.EMPLOYEENAME || !namePattern.test(record.EMPLOYEENAME)) {
+//                                 isValid = false;
+//                             }
+//                             if (!record.PSNUMBER || !psNumberPattern.test(record.PSNUMBER)) {
+//                                 isValid = false;
+//                             }
+//                             if (!record.DATEOFJOINING || !datePattern.test(record.DATEOFJOINING)) {
+//                                 isValid = false;
+//                             }
+
+//                             // Numeric column validation, add your numeric columns in the array above
+//                             numericColumns.forEach(col => {
+//                                 if (record[col] === "" || record[col] === undefined || isNaN(Number(record[col]))) {
+//                                     isValid = false;
+//                                 }
+//                             });
+
+//                             record._isValid = isValid;
+//                             allRecords.push(record);
+
+//                             if (!isValid) {
+//                                 invalidRecords.push(record);
+//                             }
+//                         }
+//                     }
+
+//                     // Set all records to the model so all are shown in the table
+//                     const oView = this.getView();
+//                     const allModel = new JSONModel({ employees: allRecords });
+//                     oView.setModel(allModel);
+
+//                     // Save invalid records to core model for download
+//                     sap.ui.getCore().setModel(new JSONModel({ invalidEmployees: invalidRecords }), "invalidModel");
+
+//                     // Update UI model for button visibility
+//                     var oUIModel = oView.getModel("ui");
+//                     oUIModel.setProperty("/hasInvalidEmployees", invalidRecords.length > 0);
+
+//                     // Build table columns and rows dynamically
+//                     const oTable = oView.byId("dataTable");
+//                     oTable.removeAllColumns();
+//                     oTable.removeAllItems();
+
+//                     headers.forEach(header => {
+//                         oTable.addColumn(new Column({
+//                             header: new Text({ text: header }),
+//                             width: "200px"
+//                         }));
+//                     });
+
+//                     allRecords.forEach(row => {
+//                         const cells = headers.map(header => new Text({ text: row[header] || "" }));
+//                         const oItem = new ColumnListItem({ cells });
+//                         if (row._isValid === false) {
+//                             oItem.addStyleClass("invalidRow");
+//                         }
+//                         oTable.addItem(oItem);
+//                     });
+
+//                     oTable.setVisible(true);
+//                     oView.byId("saveButton").setVisible(true);
+
+//                     if (invalidRecords.length > 0) {
+//                         MessageBox.warning("Some records are invalid. Please verify or download them.");
+//                     } else {
+//                         MessageToast.show("File uploaded and all records displayed!");
+//                     }
+
+//                     // Upload valid records to HANA backend,
+                   
+//                     const validRecords = allRecords.filter(r => r._isValid);
+//                     if (validRecords.length > 0) {
+//                         const mainModel = this.getView().getModel("mainModel");
+//                         if (mainModel) {
+//                             mainModel.callFunction("/bulkUpload", {
+//                                 method: "POST",
+//                                 urlParameters: {
+//                                     jsonData: JSON.stringify(validRecords)
+//                                 },
+//                                 success: () => {
+//                                     MessageToast.show("Valid records uploaded successfully.");
+//                                 },
+//                                 error: (error) => {
+//                                     console.log("Upload error:", error);
+//                                     MessageToast.show("Upload to backend failed.");
+//                                 }
+//                             });
+//                         } else {
+//                             MessageToast.show("Main model for backend upload not found.");
+//                         }
+//                     } else {
+//                         MessageToast.show("No valid records to upload to backend.");
+//                     }
+//                 };
+
+//                 reader.readAsText(file);
+//             } else {
+//                 MessageToast.show("This browser does not support file reading.");
+//             }
+//         },
+
+//         refreshTable: function () {
+//             $.ajax({
+//                 url: "/odata/v4/ecommerce/Employees",
+//                 method: "GET",
+//                 success: (data) => {
+//                     MessageToast.show("Data refreshed successfully.");
+//                 },
+//                 error: (error) => {
+//                     MessageBox.error("Failed to refresh data.");
+//                 }
+//             });
+//         },
+
+//         onSave: function () {
+//             const oModel = this.getView().getModel();
+//             const data = oModel.getProperty("/employees");
+//             console.log("Saved data:", data);
+//         },
+
+//         onopeninvalidrecords: function () {
+//             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+//             oRouter.navTo("invalidrecords");
+//         },
+
+//         onExportExcelButton: function () {
+//             const invalidModel = sap.ui.getCore().getModel("invalidModel");
+//             const invalidData = invalidModel.getProperty("/invalidEmployees");
+
+//             if (!invalidData || invalidData.length === 0) {
+//                 sap.m.MessageToast.show("No invalid records to export.");
+//                 return;
+//             }
+
+//             // Use headers from the first invalid record for CSV
+//             const headers = invalidData.length > 0 ? Object.keys(invalidData[0]).filter(h => h !== "_isValid") : [];
+//             let csvContent = headers.join(",") + "\n";
+//             invalidData.forEach(record => {
+//                 csvContent += headers.map(h => record[h] || "").join(",") + "\n";
+//             });
+
+//             const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+//             const link = document.createElement("a");
+//             link.href = URL.createObjectURL(blob);
+//             link.download = "InvalidRecords.csv";
+//             document.body.appendChild(link);
+//             link.click();
+//             document.body.removeChild(link);
+//             URL.revokeObjectURL(link.href);
+
+//             sap.m.MessageToast.show("Invalid records exported.");
+//         }
 //     });
-     
-     
+// });
+
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
@@ -505,10 +232,13 @@ sap.ui.define([
     "sap/m/ColumnListItem"
 ], function (Controller, JSONModel, MessageToast, MessageBox, Column, Text, ColumnListItem) {
     "use strict";
- 
+
     return Controller.extend("project1.controller.View1", {
-        onInit: function () {},
- 
+        onInit: function () {
+            var oUIModel = new JSONModel({ hasInvalidEmployees: false });
+            this.getView().setModel(oUIModel, "ui");
+        },
+
         onDownloadTemplate: function () {
             $.ajax({
                 url: "model/Template.csv",
@@ -528,166 +258,258 @@ sap.ui.define([
                 }
             });
         },
- 
+
         onFileChange: function (oEvent) {
             const file = oEvent.getParameter("files")[0];
             this._uploadedFile = file;
             if (file && window.FileReader) {
                 const reader = new FileReader();
- 
+
                 reader.onload = (e) => {
                     const csv = e.target.result;
-                    const lines = csv.split("\n");
-                    const headers = lines[0].trim().split(",");
-                    const validRecords = [];
+                    const lines = csv.split("\n").filter(Boolean);
+                    if (lines.length < 2) {
+                        MessageBox.warning("CSV must have header and at least one data row.");
+                        return;
+                    }
+                    const rawHeaders = lines[0].trim().split(",").map(h => h.trim());
+                    // Map CSV headers to HANA entity fields
+                    const csvToEntityMap = {
+                        "APPLICATION ID": "APPLICATIONID",
+                        "IRM PS NUMBER": "IRMPSNUMBER",
+                        "IRM NAME": "IRMNAME",
+                        "EMPLOYEE NAME": "EMPLOYEENAME",
+                        "PS NUMBER": "PSNUMBER",
+                        "BASE BU": "BASEBU",
+                        "BU CODE": "BUCODE",
+                        "ALLOCATED BU": "ALLOCATEDBU",
+                        "LOCATION": "LOCATION",
+                        "DATE OF JOINING": "DATEOFJOINING",
+                        "CURRENT CONTRACT END DATE": "CURRENTCONTRACTENDDATE",
+                        "VENDOR NAME": "VENDORNAME",
+                        "CONTRACT EXTENSION": "CONTRACTEXTENSION",
+                        "CONTRACT END DATE": "CONTRACTENDDATE",
+                        "CONTRACT EXTENSION START DATE": "CONTRACTEXTENSIONSTARTDATE",
+                        "CONTRACT EXTENSION END DATE": "CONTRACTEXTENSIONENDDATE",
+                        "CURRENT PAY RATE": "CURRENTPAYRATE",
+                        "CURRENCY": "CURRENCY",
+                        "FREQUENCY": "FREQUENCY",
+                        "PAY RATE CHANGE": "PAYRATECHANGE",
+                        "NEW PAY RATE": "NEWPAYRATE",
+                        "SKILLS": "SKILLS",
+                        "PROJECT NAME": "PROJECTNAME",
+                        "CLIENT NAME": "CLIENTNAME",
+                        "NOTICE PERIOD": "NOTICEPERIOD",
+                        "WORKING DAYS N SHIFT": "WORKINGDAYSNSHIFT",
+                        "OTHER ALLOWANCES": "OTHERALLOWANCES",
+                        "SPECIAL TERMS": "SPECIALTERMS",
+                        "STATUS": "STATUS",
+                        "SUBMITTED BY": "SUBMITTEDBY",
+                        "MODIFIED BY": "MODIFIEDBY",
+                        "SUBMITTED DATE": "SUBMITTEDDATE",
+                        "MODIFIED DATE": "MODIFIEDDATE",
+                        "WORK ORDER": "WORKORDER",
+                        "VMO HEAD FLAG": "VMOHEADFLAG",
+                        "VMO TEAM FLAG": "VMOTEAMFLAG",
+                        "ACTION TYPE": "ACTIONTYPE",
+                        "FINAL REASON": "FINALRESAON",
+                        "REASON TYPE": "REASONTYPE"
+                    };
+
+                    // Only use mapped entity fields present in the CSV
+                    const entityFields = rawHeaders.map(h => csvToEntityMap[h.toUpperCase()] || h);
+
+                    const allRecords = [];
                     const invalidRecords = [];
- 
+
+                    // Validation patterns
+                    const namePattern = /^[A-Za-z\s]+$/;
+                    const psNumberPattern = /^\d{6,10}$/;
+                    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+                    const numericColumns = ["CURRENTPAYRATE", "NEWPAYRATE"];
+                    const booleanColumns = ["CONTRACTEXTENSION", "PAYRATECHANGE", "VMOHEADFLAG", "VMOTEAMFLAG"];
+
                     for (let i = 1; i < lines.length; i++) {
                         const line = lines[i].trim();
                         if (line) {
                             const values = line.split(",");
                             const record = {};
-                            headers.forEach((header, index) => {
-                                record[header] = values[index];
+                            rawHeaders.forEach((header, index) => {
+                                const entityField = csvToEntityMap[header.toUpperCase()] || header;
+                                record[entityField] = values[index] ? values[index].trim() : "";
                             });
- 
-                            let isValid = true;
- 
-                            // Name validation
-                            const name = record["Name"];
-                            if (name && /\d/.test(name)) {
-                                isValid = false;
-                            }
- 
-                            // Email validation
-                            const email = record["Email"];
-                            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                            if (email && !emailPattern.test(email)) {
-                                isValid = false;
-                            }
- 
-                            // Phone validation
-                            const phone = record["Phone"];
-                            const phoneStr = String(phone).padStart(10, "0");
-                            const phonePattern = /^\d{10}$/;
-                            if (!phonePattern.test(phoneStr)) {
-                                isValid = false;
-                            }
-                            record["Phone"] = phoneStr;
- 
-                            // JoiningDate format conversion
-                            const joiningDate = record["JoiningDate"];
-                            const dateParts = joiningDate.split("-");
-                            if (dateParts.length === 3) {
-                                const [day, month, year] = dateParts;
-                                if (day.length === 2 && month.length === 2 && year.length === 4) {
-                                    record["JoiningDate"] = `${year}-${month}-${day}`;
-                                } else {
-                                    record["JoiningDate"] = null;
+
+                            // Date conversion
+                            [
+                                "DATEOFJOINING", "CURRENTCONTRACTENDDATE", "CONTRACTENDDATE",
+                                "CONTRACTEXTENSIONSTARTDATE", "CONTRACTEXTENSIONENDDATE",
+                                "SUBMITTEDDATE", "MODIFIEDDATE"
+                            ].forEach(dateField => {
+                                if (record[dateField] && /^\d{2}-\d{2}-\d{4}$/.test(record[dateField])) {
+                                    const [dd, mm, yyyy] = record[dateField].split("-");
+                                    record[dateField] = `${yyyy}-${mm}-${dd}`;
                                 }
-                            }
- 
-                            if (isValid) {
-                                validRecords.push(record);
-                            } else {
-                                invalidRecords.push(record);
-                            }
+                            });
+
+                            // Boolean conversion
+                            booleanColumns.forEach(field => {
+                                if (record[field]) {
+                                    const val = record[field].toString().toLowerCase();
+                                    record[field] = (val === "true" || val === "1" || val === "yes");
+                                } else if (record[field] !== undefined) {
+                                    record[field] = false;
+                                }
+                            });
+
+                            // Numeric conversion
+                            numericColumns.forEach(col => {
+                                if (record[col]) {
+                                    const num = parseFloat(record[col]);
+                                    record[col] = isNaN(num) ? null : num;
+                                }
+                            });
+
+                            // Validation logic (customize/extend as needed)
+                            let isValid = true;
+                            if (record.EMPLOYEENAME && !namePattern.test(record.EMPLOYEENAME)) isValid = false;
+                            if (record.PSNUMBER && !psNumberPattern.test(record.PSNUMBER)) isValid = false;
+                            if (record.DATEOFJOINING && !datePattern.test(record.DATEOFJOINING)) isValid = false;
+                            numericColumns.forEach(col => {
+                                if (record[col] !== undefined && record[col] !== null && isNaN(record[col])) isValid = false;
+                            });
+
+                            record._isValid = isValid;
+                            allRecords.push(record);
+                            if (!isValid) invalidRecords.push(record);
                         }
                     }
- 
+
+                    // Set all records to the model so all are shown in the table
                     const oView = this.getView();
-                    const validModel = new JSONModel({ employees: validRecords });
-                    const invalidModel = new JSONModel({ invalidEmployees: invalidRecords });
- 
-                    oView.setModel(validModel);
-                    sap.ui.getCore().setModel(invalidModel, "invalidModel");
- 
+                    const allModel = new JSONModel({ employees: allRecords });
+                    oView.setModel(allModel);
+
+                    // Save invalid records to core model for download
+                    sap.ui.getCore().setModel(new JSONModel({ invalidEmployees: invalidRecords }), "invalidModel");
+
+                    // Update UI model for button visibility
+                    var oUIModel = oView.getModel("ui");
+                    oUIModel.setProperty("/hasInvalidEmployees", invalidRecords.length > 0);
+
+                    // Build table columns and rows dynamically
                     const oTable = oView.byId("dataTable");
                     oTable.removeAllColumns();
                     oTable.removeAllItems();
- 
-                    headers.forEach(header => {
+
+                    entityFields.forEach(header => {
                         oTable.addColumn(new Column({
                             header: new Text({ text: header }),
                             width: "200px"
                         }));
                     });
- 
-                    validRecords.forEach(row => {
-                        const cells = headers.map(header => new Text({ text: row[header] }));
-                        oTable.addItem(new ColumnListItem({ cells }));
+
+                    allRecords.forEach(row => {
+                        const cells = entityFields.map(header => new Text({ text: (row[header] !== undefined && row[header] !== null) ? row[header].toString() : "" }));
+                        const oItem = new ColumnListItem({ cells });
+                        if (row._isValid === false) {
+                            oItem.addStyleClass("invalidRow");
+                        }
+                        oTable.addItem(oItem);
                     });
- 
+
                     oTable.setVisible(true);
                     oView.byId("saveButton").setVisible(true);
- 
+
                     if (invalidRecords.length > 0) {
-                        MessageBox.warning("Some records are invalid.Please verify");
+                        MessageBox.warning("Some records are invalid. Please verify or download them.");
                     } else {
-                        MessageToast.show("File uploaded and table updated!");
+                        MessageToast.show("File uploaded and all records displayed!");
                     }
- 
-                    // Upload valid records to SAP HANA
-                    const mainModel = this.getView().getModel("mainModel");
-                    mainModel.callFunction("/bulkUpload", {
-                        method: "POST",
-                        urlParameters: {
-                            jsonData: JSON.stringify(validRecords)
-                        },
-                        success: () => {
-                            MessageToast.show("Valid records uploaded successfully.");
-                        },
-                        error: (error) => {
-                            console.log("Upload error:", error);
+
+                    // Upload valid records to HANA backend
+                    const validRecords = allRecords.filter(r => r._isValid);
+                    if (validRecords.length > 0) {
+                        const mainModel = this.getView().getModel("mainModel");
+                        if (mainModel) {
+                            mainModel.callFunction("/bulkUpload", {
+                                method: "POST",
+                                urlParameters: {
+                                    jsonData: JSON.stringify(validRecords)
+                                },
+                                success: (data) => {
+                                    MessageToast.show("Valid records uploaded successfully.");
+                                    if (data && data.downloadInvalidRecords) {
+                                        // Optionally: show download link for invalids if backend returns one
+                                        console.log("Invalid download link:", data.downloadInvalidRecords);
+                                    }
+                                },
+                                error: (error) => {
+                                    // Show backend error message if available
+                                    let msg = "Upload to backend failed.";
+                                    if (error && error.responseText) {
+                                        try {
+                                            const payload = JSON.parse(error.responseText);
+                                            msg = payload.error && payload.error.message ? payload.error.message : msg;
+                                        } catch (e) {}
+                                    }
+                                    console.log("Upload error:", error);
+                                    MessageToast.show(msg);
+                                }
+                            });
+                        } else {
+                            MessageToast.show("Main model for backend upload not found.");
                         }
-                    });
+                    } else {
+                        MessageToast.show("No valid records to upload to backend.");
+                    }
                 };
- 
+
                 reader.readAsText(file);
             } else {
                 MessageToast.show("This browser does not support file reading.");
             }
         },
- 
+
         refreshTable: function () {
             $.ajax({
                 url: "/odata/v4/ecommerce/Employees",
                 method: "GET",
                 success: (data) => {
-                    console.log("Data fetched:", data);
                     MessageToast.show("Data refreshed successfully.");
                 },
                 error: (error) => {
-                    console.error("Refresh error:", error);
                     MessageBox.error("Failed to refresh data.");
                 }
             });
         },
- 
+
         onSave: function () {
             const oModel = this.getView().getModel();
             const data = oModel.getProperty("/employees");
             console.log("Saved data:", data);
         },
- 
+
         onopeninvalidrecords: function () {
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
             oRouter.navTo("invalidrecords");
         },
+
         onExportExcelButton: function () {
             const invalidModel = sap.ui.getCore().getModel("invalidModel");
             const invalidData = invalidModel.getProperty("/invalidEmployees");
-         
+
             if (!invalidData || invalidData.length === 0) {
                 sap.m.MessageToast.show("No invalid records to export.");
                 return;
             }
-         
-            let csvContent = "Name,Email,Phone,JoiningDate\n";
+
+            // Use entity field headers for CSV
+            const headers = Object.keys(invalidData[0]).filter(h => h !== "_isValid");
+            let csvContent = headers.join(",") + "\n";
             invalidData.forEach(record => {
-                csvContent += `${record.Name},${record.Email},${record.Phone},${record.JoiningDate}\n`;
+                csvContent += headers.map(h => record[h] || "").join(",") + "\n";
             });
-         
+
             const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
@@ -696,13 +518,8 @@ sap.ui.define([
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(link.href);
-         
+
             sap.m.MessageToast.show("Invalid records exported.");
-        },
-       
-        
-        
+        }
     });
 });
- 
- 

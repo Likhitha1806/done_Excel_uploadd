@@ -7,26 +7,21 @@
     <Page id="page" title="Employee Upload">
         <content>
             <VBox id="mainVBox" class="sapUiSmallMargin">
-                
                 <Text id="_IDGenText1" text="Welcome to SAPUI5!" />
-
                 <Button id="_IDGenButton" text="Download Template"
                         press="onDownloadTemplate"
-                        class="sapUiSmallMarginBottom" />
-
+                        class="sapUiSmallMarginBottom"
+                          />
                 <Button id="_IDGenButton1" text="Open Invalid Records"
                         press="onopeninvalidrecords"
-                        class="sapUiSmallMarginBottom" />
-
-              
+                        class="sapUiSmallMarginBottom"
+                         visible="{ui>/hasInvalidEmployees}" />
                 <Button
                     id="ExportExcelButton"
                     text="Download Invalid Records"
                     press="onExportExcelButton"
-                    visible="true"
+                    visible="{ui>/hasInvalidEmployees}"
                     class="sapUiSmallMarginTop" />
-               
-
                 <unified:FileUploader
                     id="fileUploader"
                     name="uploadFile"
@@ -40,31 +35,29 @@
                     mimeType="text/csv"
                     useMultipart="false"
                     class="sapUiSmallMarginBottom" />
-
                 <ScrollContainer id="_IDGenScrollContainer1"
                     horizontal="true"
                     vertical="false"
                     width="100%"
                     height="auto"
                     class="scrollContainer">
-
                     <Table
                         id="dataTable"
                         visible="false"
                         fixedLayout="false"
-                        width="1500px"
+                        width="6000px"
                         class="sapUiResponsiveMargin">
                     </Table>
                 </ScrollContainer>
-
                 <Button
                     id="saveButton"
                     text="Save"
                     press="onSave"
                     visible="false"
                     class="sapUiSmallMarginTop" />
-
             </VBox>
         </content>
     </Page>
 </mvc:View>
+
+
