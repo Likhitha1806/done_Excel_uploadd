@@ -17,11 +17,11 @@ entity Employees {
     CONTRACTENDDATE: Date;
     CONTRACTEXTENSIONSTARTDATE: Date;
     CONTRACTEXTENSIONENDDATE: Date;
-    CURRENTPAYRATE: Decimal(10,2);
+    CURRENTPAYRATE: String;
     CURRENCY: String;
     FREQUENCY: String;
     PAYRATECHANGE: Boolean;
-    NEWPAYRATE: Decimal(10,2);
+    NEWPAYRATE: String;
     SKILLS: String;
     PROJECTNAME: String;
     CLIENTNAME: String;
