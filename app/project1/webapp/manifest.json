@@ -106,7 +106,12 @@
    "pattern": "invalidrecords",
 "name": "invalidrecords",
  "target": "invalidrecords"
-  }
+  },
+  {
+    "pattern": "InactiveRecords",
+ "name": "InactiveRecords",
+  "target": "InactiveRecords"
+   }
   
       ],
       "targets": {
@@ -118,6 +123,11 @@
 "invalidrecords": {
  "viewName": "InvalidRecords",
   "viewId": "invalidRecordsView",
+  "viewLevel": 1
+  },
+  "InactiveRecords": {
+ "viewName": "InactiveRecords",
+  "viewId": "InactiveRecordsView",
   "viewLevel": 1
   }
   

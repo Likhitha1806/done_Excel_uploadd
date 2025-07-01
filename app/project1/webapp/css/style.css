@@ -1,3 +1,75 @@
 .invalidRow {
     background-color:red !important; /* Light red background */
 }
+
+.customUploadBox {
+    background: #f5faff;
+    border-radius: 8px;
+    border: 1px solid #d1eaff;
+    padding: 1.5rem 1rem 1rem 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(200,220,255,0.10);
+}
+
+.customDataBox {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
+    padding: 1.5rem 1rem 1rem 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(150,150,150,0.05);
+}
+/* .myGradientBackground {
+    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%) !important;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+} */
+.myTitleColor {
+    color: #6c4fbb !important;
+    text-shadow: 1px 1px 8px #fff;
+}
+.myPanelActions {
+    background: linear-gradient(90deg,#f9d423 0,#ff4e50 100%) !important;
+    border-radius: 12px;
+}
+.myPanelUpload {
+    background: linear-gradient(90deg,#e0eafc,#cfdef3) !important;
+    border-radius: 12px;
+}
+.myPanelPreview {
+    background: linear-gradient(90deg,#a1c4fd 0,#c2e9fb 100%) !important;
+    border-radius: 12px;
+}
+.myTableBackground {
+    background: linear-gradient(90deg,#fff,#f1f8e9) !important;
+    box-shadow: 0 2px 8px rgba(108,79,187,.08);
+}
+.mySuccessStrip {
+    background: #f5fafd !important;
+    border: 1px solid #71c7ec !important;
+    color: #247ba0 !important;
+}
+.myDashedButton {
+    border: 2px dashed #ff4e50 !important;
+    color: #ff4e50 !important;
+}
+/* .myGreenButton {
+    background: #38ada9 !important;
+    color: white !important;
+} */
+/* .myFileUploader {
+    background: #fffbe7 !important;
+    border: 1px dashed #f9d423 !important;
+    border-radius: 8px !important;
+} */
+.myTextStrong {
+    color: #31708f !important;
+    font-weight: bold !important;
+}
+.myMarginLeft8 {
+    margin-left: 8px;
+}
+/* .myBlueBackground {
+    background: #2366b4 !important;
+} */

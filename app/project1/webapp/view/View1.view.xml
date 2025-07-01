@@ -2,62 +2,195 @@
     controllerName="project1.controller.View1"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:unified="sap.ui.unified">
+    xmlns:unified="sap.ui.unified"
+    xmlns:core="sap.ui.core">
 
-    <Page id="page" title="Employee Upload">
+    <Page id="page" title="Employee Upload Portal" backgroundDesign="Standard" class="myBlueBackground">
         <content>
-            <VBox id="mainVBox" class="sapUiSmallMargin">
-                <Text id="_IDGenText1" text="Welcome to SAPUI5!" />
-                <Button id="_IDGenButton" text="Download Template"
-                        press="onDownloadTemplate"
-                        class="sapUiSmallMarginBottom"
-                          />
-                <Button id="_IDGenButton1" text="Open Invalid Records"
+            <VBox id="mainVBox" class="sapUiMediumMargin myGradientBackground" renderType="Bare">
+                <HBox id="_IDGenHBox" alignItems="Center" justifyContent="Center" class="sapUiSmallMarginBottom">
+                    <core:Icon id="_IDGenIcon" src="sap-icon://group" size="3rem" color="#6c4fbb" class="sapUiTinyMarginEnd"/>
+                    <Title id="_IDGenTitle" text="Employee Bulk Upload" level="H1" class="sapUiTinyMarginBottom myTitleColor"/>
+                </HBox>
+
+                <!-- Button Row with FileUploader beside Download Template button -->
+                <HBox id="_IDGenHBox1" alignItems="Center" justifyContent="Start" class="sapUiTinyMarginBeginEnd">
+                    <Button id="downloadTemplateBtn"
+                        text="Download Template"
+                        icon="sap-icon://download"
+                        type="Emphasized"
+                        press="onDownloadTemplate"/>
+                    <unified:FileUploader
+                        id="fileUploader"
+                        name="uploadFile"
+                        uploadUrl=""
+                        width="250px"
+                        placeholder="Choose a CSV file"
+                        change="onFileChange"
+                        buttonText="Upload"
+                        fileType="csv"
+                        maximumFileSize="5"
+                        mimeType="text/csv"
+                        useMultipart="false"
+                        class="sapUiTinyMarginBeginEnd myFileUploader myMarginLeft8"/>
+                    <Button
+                        text="Show Contract Extension Records"
+                        press="onShowContractExtensionDialog"
+                        id="btnContractExtension"
+                        class="sapUiTinyMarginBeginEnd"
+                        visible="{= ${ui>/hasContractExtensionYes} || ${ui>/hasContractExtensionNo} }"/>
+                    <Button id="openInvalidBtn"
+                        text="Open Invalid Records"
+                        icon="sap-icon://alert"
                         press="onopeninvalidrecords"
-                        class="sapUiSmallMarginBottom"
-                         visible="{ui>/hasInvalidEmployees}" />
-                <Button
-                    id="ExportExcelButton"
-                    text="Download Invalid Records"
-                    press="onExportExcelButton"
-                    visible="{ui>/hasInvalidEmployees}"
-                    class="sapUiSmallMarginTop" />
-                <unified:FileUploader
-                    id="fileUploader"
-                    name="uploadFile"
-                    uploadUrl=""
-                    width="100%"
-                    placeholder="Choose a CSV file to upload"
-                    change="onFileChange"
-                    buttonText="Upload"
-                    fileType="csv"
-                    maximumFileSize="5"
-                    mimeType="text/csv"
-                    useMultipart="false"
-                    class="sapUiSmallMarginBottom" />
-                <ScrollContainer id="_IDGenScrollContainer1"
-                    horizontal="true"
-                    vertical="false"
-                    width="100%"
-                    height="auto"
-                    class="scrollContainer">
+                        visible="{ui>/hasInvalidEmployees}"
+                        class="sapUiTinyMarginBeginEnd"/>
+                    <Button
+                        id="clearButton"
+                        text="Clear"
+                        icon="sap-icon://delete"
+                        press="onClear"
+                        type="Transparent"
+                        class="sapUiTinyMarginBeginEnd"
+                        visible="{ui>/isUploaded}"/>
+                </HBox>
+
+                <!-- Spacer between button row and preview panel -->
+                <HBox id="_IDGenHBox3" height="2rem" />
+
+                <!-- Preview and Save Panel: Only visible after upload -->
+                <Panel id="_IDGenPanel2"
+                    headerText="🔍 Preview  Save"
+                    expandable="false"
+                    visible="{ui>/isUploaded}"
+                    class="sapUiNoContentPadding sapUiSmallMarginBottom myPanelPreview">
+                    <VBox id="_IDGenVBox2">
+                        <Text id="_IDGenText1"  class="sapUiSmallMarginBottom myTitleColor"/>
+                        <ScrollContainer
+                            id="_IDGenScrollContainer1"
+                            horizontal="true"
+                            vertical="false"
+                            width="100%"
+                            height="auto"
+                            class="scrollContainer">
+                            <Table
+                                id="dataTable"
+                                visible="false"
+                                fixedLayout="false"
+                                width="6000px"
+                                class="sapUiResponsiveMargin myTableBackground"
+                                alternateRowColors="true"/>
+                        </ScrollContainer>
+                        <!-- Pagination Controls with Show Rows Selector beside -->
+                        <HBox id="paginationBar" alignItems="Center" justifyContent="Center" class="sapUiSmallMarginTop" visible="false">
+                            <Button id="btnPrev" icon="sap-icon://navigation-left-arrow" press="onPrevPage" type="Transparent"/>
+                            <HBox id="pageNumbers" alignItems="Center" class="sapUiTinyMarginBeginEnd"/>
+                            <Button id="btnNext" icon="sap-icon://navigation-right-arrow" press="onNextPage" type="Transparent"/>
+                            <Text id="_IDGenText159" text="Show rows:" class="sapUiTinyMarginBeginEnd" />
+                            <Select 
+                                id="rowCountSelect"
+                                selectedKey="{ui>/pageSize}"
+                                change="onRowCountChange"
+                                width="80px">
+                                <core:Item id="_IDGenItem3" key="5" text="5"/>
+                                <core:Item id="_IDGenItem4" key="10" text="10"/>
+                                <core:Item id="_IDGenItem5" key="25" text="25"/>
+                                <core:Item id="_IDGenItem6" key="50" text="50"/>
+                                <core:Item id="_IDGenItem7" key="100" text="100"/>
+                                <core:Item id="_IDGenItem8" key="250" text="250"/>
+                                <core:Item id="_IDGenItem9" key="500" text="500"/>
+                            </Select>
+                        </HBox>
+                        <Button
+                            id="saveButton"
+                            text="Save"
+                            type="Emphasized"
+                            press="onSave"
+                            visible="false"
+                            icon="sap-icon://save"
+                            class="sapUiSmallMarginTop myGreenButton"/>
+                    </VBox>
+                </Panel>
+            </VBox>
+
+            <!-- Dialog for Invalid Records -->
+            <Dialog
+                id="invalidRecordsDialog"
+                title="Invalid Records"
+                draggable="true"
+                resizable="true"
+                contentWidth="80%"
+                contentHeight="60%"
+                class="sapUiResponsivePadding--header sapUiResponsivePadding--content">
+                <Table
+                    id="invalidRecordsTable"
+                    fixedLayout="false"
+                    width="6000px"
+                    alternateRowColors="true"
+                    class="sapUiResponsiveMargin"/>
+                <beginButton>
+                    <Button id="_IDGenButton4" text="Save to Backend"
+                        icon="sap-icon://save"
+                        press=".onSaveInvalidRecords"
+                        type="Emphasized"/>
+                </beginButton>
+                <endButton>
+                    <Button id="_IDGenButton" text="Close" press=".onCloseInvalidDialog"/>
+                </endButton>
+            </Dialog>
+
+            <!-- Dialog for Inactive Records -->
+            <Dialog
+                id="inactiveRecordsDialog"
+                title="Inactive Records"
+                draggable="true"
+                resizable="true"
+                contentWidth="80%"
+                contentHeight="60%"
+                class="sapUiResponsivePadding--header sapUiResponsivePadding--content">
+                <Table
+                    id="inactiveRecordsTable"
+                    fixedLayout="false"
+                    width="6000px"
+                    alternateRowColors="true"
+                    class="sapUiResponsiveMargin"/>
+                <endButton>
+                    <Button id="_IDGeButton2" text="Close" press=".onCloseInactiveDialog"/>
+                </endButton>
+            </Dialog>
+
+            <!-- Unified Dialog for Contract Extension Records (Yes/No) -->
+            <Dialog
+                id="contractExtensionDialog"
+                title="Contract Extension Records"
+                draggable="true"
+                resizable="true"
+                contentWidth="80%"
+                contentHeight="60%"
+                class="sapUiResponsivePadding--header sapUiResponsivePadding--content">
+                <VBox id="_IDGenVBox">
+                    <HBox id="_IDGenHBox2" alignItems="Center" justifyContent="End" class="sapUiTinyMarginBottom">
+                        <Text id="_IDGenText158" text="Show records with Contract Extension: " />
+                        <Select id="contractExtensionSelect"
+                                selectedKey="yes"
+                                change="onContractExtensionSelectChange"
+                                width="120px"
+                                class="sapUiTinyMarginBeginEnd">
+                            <core:Item id="_IDGenItem1" key="yes" text="Yes" />
+                            <core:Item id="_IDGenItem2" key="no" text="No" />
+                        </Select>
+                    </HBox>
                     <Table
-                        id="dataTable"
-                        visible="false"
+                        id="contractExtensionTable"
                         fixedLayout="false"
                         width="6000px"
-                        class="sapUiResponsiveMargin">
-                    </Table>
-                </ScrollContainer>
-                <Button
-                    id="saveButton"
-                    text="Save"
-                    press="onSave"
-                    visible="false"
-                    class="sapUiSmallMarginTop" />
-            </VBox>
+                        alternateRowColors="true"
+                        class="sapUiResponsiveMargin"/>
+                </VBox>
+                <endButton>
+                    <Button id="_IDGenButton1" text="Close" press=".onCloseContractExtensionDialog"/>
+                </endButton>
+            </Dialog>
         </content>
     </Page>
 </mvc:View>
-
-
